@@ -10,6 +10,10 @@ LANGUAGE="pt_BR.UTF-8"
 REGION="America"
 ZONE="Sao_Paulo"
 
+KEYBOARD_LAYOUT="br"
+KEYBOARD_VARIANT="abnt2"
+KEYBOARD_MODEL="pc105"
+
 if [[ $EUID -ne 0 ]]; then
     echo "Execute o script como root (sudo)"
     exit 1
@@ -42,9 +46,9 @@ echo "[INFO] Configurando keyboard do sistema instalado"
 
 cat > "$KEYBOARD_FILE" <<EOF
 ---
-layout: br
-variant: abnt2
-model: pc105
+layout: $KEYBOARD_LAYOUT
+variant: $KEYBOARD_LAYOUT
+model: $KEYBOARD_MODEL
 EOF
 
 echo "[INFO] Reiniciando Calamares"
