@@ -28,9 +28,9 @@ echo "[INFO] Forçando idioma do Calamares: $LANGUAGE"
 LOCALE_FILE="$CALAMARES_DIR/modules/locale.conf"
 KEYBOARD_FILE="$CALAMARES_DIR/modules/keyboard.conf"
 USERS_FILE="$CALAMARES_DIR/modules/users.conf"
+PARTITION_FILE="$CALAMARES_DIR/modules/partition.conf"
 
 echo "[INFO] Configurando locale do sistema instalado"
-
 cat > "$LOCALE_FILE" <<EOF
 ---
 region: $REGION
@@ -38,11 +38,10 @@ zone: $ZONE
 EOF
 
 echo "[INFO] Configurando keyboard do sistema instalado"
-
 cat > "$KEYBOARD_FILE" <<EOF
 ---
 layout: $KEYBOARD_LAYOUT
-variant: $KEYBOARD_LAYOUT
+variant: $KEYBOARD_VARIANT
 model: $KEYBOARD_MODEL
 EOF
 
@@ -57,6 +56,22 @@ presets:
     loginName:
         value: $USER_LOGIN_NAME
         editable: $USER_FIELDS_EDITABLE
+EOF
+
+echo "[INFO] Configurando particionamento automatizado"
+cat > "$PARTITION_FILE" <<EOF
+---
+userSwapChoices: ["none"]
+initialPartitioningChoice: erase
+defaultFileSystemType: ext4
+partitionLayout:
+  - device: /dev/sda
+    fs: ext4
+    mountPoint: /
+    wipe: true
+efi:
+  mountPoint: /boot/efi
+  recommendedSize: 512M
 EOF
 
 echo "[INFO] Reiniciando Calamares"
