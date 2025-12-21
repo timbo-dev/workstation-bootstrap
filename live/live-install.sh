@@ -58,20 +58,11 @@ presets:
         editable: $USER_FIELDS_EDITABLE
 EOF
 
-echo "[INFO] Configurando particionamento automatizado"
+echo "[INFO] Configurando particionamento para modo manual"
 cat > "$PARTITION_FILE" <<EOF
 ---
 userSwapChoices: ["none"]
-initialPartitioningChoice: erase
-defaultFileSystemType: ext4
-partitionLayout:
-  - device: /dev/sda
-    fs: ext4
-    mountPoint: /
-    wipe: true
-efi:
-  mountPoint: /boot/efi
-  recommendedSize: 512M
+initialPartitioningChoice: manual
 EOF
 
 echo "[INFO] Reiniciando Calamares"
