@@ -4,7 +4,7 @@ set -euo pipefail
 
 CALAMARES_DIR="/etc/calamares"
 BACKUP_DIR="/tmp/calamares-backup"
-SETTINGS="$CALAMERES_DIR/settings.conf"
+SETTINGS="$CALAMARES_DIR/settings.conf"
 
 LANGUAGE="pt_BR.UTF-8"
 REGION="America"
