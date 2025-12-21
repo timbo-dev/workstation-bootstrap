@@ -67,10 +67,10 @@ sleep 1
 # Go to root to avoid mount path issues
 cd /
 
-export LANG="$LANGUAGE"
-export LC_ALL="$LANGUAGE"
-
 # Ensure /mnt exists
 mkdir -p /mnt
 
-LANG="$LANGUAGE" LC_ALL="$LANGUAGE" sudo -E calamares &
+export LANG="$LANGUAGE"
+export LC_ALL="$LANGUAGE"
+
+sudo -E calamares -d &
