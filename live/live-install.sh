@@ -25,9 +25,6 @@ fi
 echo "[INFO] Rodando no Live Environment"
 echo "[INFO] Forçando idioma do Calamares: $LANGUAGE"
 
-export LANG="$LANGUAGE"
-export LC_ALL="$LANGUAGE"
-
 LOCALE_FILE="$CALAMARES_DIR/modules/locale.conf"
 KEYBOARD_FILE="$CALAMARES_DIR/modules/keyboard.conf"
 USERS_FILE="$CALAMARES_DIR/modules/users.conf"
@@ -66,5 +63,14 @@ echo "[INFO] Reiniciando Calamares"
 
 pkill calamares || true
 sleep 1
+
+# Go to root to avoid mount path issues
+cd /
+
+export LANG="$LANGUAGE"
+export LC_ALL="$LANGUAGE"
+
+# Ensure /mnt exists
+mkdir -p /mnt
 
 LANG="$LANGUAGE" LC_ALL="$LANGUAGE" sudo calamares &
