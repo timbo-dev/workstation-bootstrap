@@ -73,4 +73,4 @@ export LC_ALL="$LANGUAGE"
 # Ensure /mnt exists
 mkdir -p /mnt
 
-LANG="$LANGUAGE" LC_ALL="$LANGUAGE" sudo calamares &
+LANG="$LANGUAGE" LC_ALL="$LANGUAGE" sudo -E calamares &
