@@ -14,6 +14,10 @@ KEYBOARD_LAYOUT="br"
 KEYBOARD_VARIANT="abnt2"
 KEYBOARD_MODEL="pc105"
 
+USER_FULL_NAME="Timbo"
+USER_LOGIN_NAME="timbo-dev"
+USER_FIELDS_EDITABLE="false"
+
 if [[ $EUID -ne 0 ]]; then
     echo "Execute o script como root (sudo)"
     exit 1
@@ -33,6 +37,7 @@ export LC_ALL="$LANGUAGE"
 
 LOCALE_FILE="$CALAMARES_DIR/modules/locale.conf"
 KEYBOARD_FILE="$CALAMARES_DIR/modules/keyboard.conf"
+USERS_FILE="$CALAMARES_DIR/modules/users.conf"
 
 echo "[INFO] Configurando locale do sistema instalado"
 
@@ -49,6 +54,19 @@ cat > "$KEYBOARD_FILE" <<EOF
 layout: $KEYBOARD_LAYOUT
 variant: $KEYBOARD_LAYOUT
 model: $KEYBOARD_MODEL
+EOF
+
+echo "[INFO] Configurando user do sistema instalado"
+cat > "$USERS_FILE" <<EOF
+---
+presets:
+    fullName:
+        value: $USER_FULL_NAME
+        editable: $USER_FIELDS_EDITABLE
+
+    loginName:
+        value: $USER_LOGIN_NAME
+        editable: $USER_FIELDS_EDITABLE
 EOF
 
 echo "[INFO] Reiniciando Calamares"
