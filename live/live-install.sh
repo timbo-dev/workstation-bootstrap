@@ -3,7 +3,6 @@
 set -euo pipefail
 
 CALAMARES_DIR="/etc/calamares"
-BACKUP_DIR="/tmp/calamares-backup"
 SETTINGS="$CALAMARES_DIR/settings.conf"
 
 LANGUAGE="pt_BR.UTF-8"
@@ -24,12 +23,6 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 echo "[INFO] Rodando no Live Environment"
-
-if [[ ! -d "$BACKUP_DIR" ]]; then
-    echo "[INFO] Criando backup do Calamares"
-    cp -a "$CALAMARES_DIR" "$BACKUP_DIR"
-fi
-
 echo "[INFO] Forçando idioma do Calamares: $LANGUAGE"
 
 export LANG="$LANGUAGE"
