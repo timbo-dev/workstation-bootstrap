@@ -28,7 +28,6 @@ echo "[INFO] Forçando idioma do Calamares: $LANGUAGE"
 LOCALE_FILE="$CALAMARES_DIR/modules/locale.conf"
 KEYBOARD_FILE="$CALAMARES_DIR/modules/keyboard.conf"
 USERS_FILE="$CALAMARES_DIR/modules/users.conf"
-PARTITION_FILE="$CALAMARES_DIR/modules/partition.conf"
 
 echo "[INFO] Configurando locale do sistema instalado"
 cat > "$LOCALE_FILE" <<EOF
@@ -45,25 +44,33 @@ variant: $KEYBOARD_VARIANT
 model: $KEYBOARD_MODEL
 EOF
 
-echo "[INFO] Configurando user do sistema instalado"
+echo "[INFO] Configurando usuário e sudo"
 cat > "$USERS_FILE" <<EOF
 ---
+defaultGroups:
+  - wheel
+  - users
+autologinGroup: autologin
+sudoersGroup: wheel
+sudoersConfigureWithGroup: true
+displayAutologin: true
+doAutologin: true
+setRootPassword: false
+doReusePassword: false
+allowWeakPasswords: true
+allowWeakPasswordsDefault: true
 presets:
-    fullName:
-        value: $USER_FULL_NAME
-        editable: $USER_FIELDS_EDITABLE
-
-    loginName:
-        value: $USER_LOGIN_NAME
-        editable: $USER_FIELDS_EDITABLE
+  fullName:
+    value: $USER_FULL_NAME
+    editable: $USER_FIELDS_EDITABLE
+  loginName:
+    value: $USER_LOGIN_NAME
+    editable: $USER_FIELDS_EDITABLE
 EOF
 
-echo "[INFO] Configurando particionamento para modo manual"
-cat > "$PARTITION_FILE" <<EOF
----
-userSwapChoices: ["none"]
-initialPartitioningChoice: manual
-EOF
+# Adiciona sudo temporário sem senha
+echo "$USER_LOGIN_NAME ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/temp-nopasswd
+chmod 440 /etc/sudoers.d/temp-nopasswd
 
 echo "[INFO] Reiniciando Calamares"
 
