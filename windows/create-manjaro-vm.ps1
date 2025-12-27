@@ -121,6 +121,8 @@ VBoxManage modifyvm $VM_NAME `
   --cpus $CPUS `
   --vram 128 `
   --graphicscontroller vmsvga `
+  --clipboard bidirectional `
+  --draganddrop bidirectional `
   --audio none `
   --nic1 nat
 
