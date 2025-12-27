@@ -1,11 +1,14 @@
 $VM_NAME = "manjaro-dev"
 $ISO_URL = "https://download.manjaro.org/gnome/25.0.10/manjaro-gnome-25.0.10-minimal-251013-linux612.iso"
 $ISO_PATH = "$PSScriptRoot\manjaro.iso"
+$VDI_PATH = "$PSScriptRoot\$VM_NAME.vdi"
 
 $RAM = 8192
 $CPUS = 4
 $DISK_SIZE = 50000 # MB
 $VBoxDir = "C:\Program Files\Oracle\VirtualBox"
+
+$ErrorActionPreference = 'Stop'
 
 function Test-VMExists {
     param (
@@ -85,22 +88,30 @@ function Ensure-Path {
     $env:Path += ";$PathToAdd"
 }
 
+# 1. Ensure VirtualBox is available FIRST
+if (Test-Path "$VBoxDir\VBoxManage.exe") {
+    Ensure-Path -PathToAdd $VBoxDir
+}
+
+Ensure-Command -Command "VBoxManage" -WingetId "Oracle.VirtualBox"
+
+# 2. Now it is safe to check for existing VMs
 if (Test-VMExists -Name $VM_NAME) {
     Write-Host "[WARN] VM '${VM_NAME}' já existe"
     Stop-VMIfRunning -Name $VM_NAME
     Remove-VM -Name $VM_NAME
 }
 
-if (Test-Path "$VBoxDir\VBoxManage.exe") {
-    Ensure-Path -PathToAdd $VBoxDir
+# 3. Clean up VDI if it exists but wasn't deleted by unregistervm (or if script failed previously)
+if (Test-Path $VDI_PATH) {
+    Write-Host "[INFO] Removendo disco antigo $VDI_PATH..."
+    Remove-Item -Path $VDI_PATH -Force
 }
 
 Write-Host "[INFO] Baixando ISO do Manjaro..."
 if (-not (Test-Path $ISO_PATH)) {
     Invoke-WebRequest $ISO_URL -OutFile $ISO_PATH
 }
-
-Ensure-Command -Command "VBoxManage" -WingetId "Oracle.VirtualBox"
 
 Write-Host "[INFO] Criando VM..."
 VBoxManage createvm --name $VM_NAME --ostype ArchLinux_64 --register
@@ -114,7 +125,6 @@ VBoxManage modifyvm $VM_NAME `
   --nic1 nat
 
 Write-Host "[INFO] Criando disco..."
-$VDI_PATH = "$PSScriptRoot\$VM_NAME.vdi"
 VBoxManage createmedium disk --filename $VDI_PATH --size $DISK_SIZE
 
 VBoxManage storagectl $VM_NAME --name "SATA" --add sata --controller IntelAhci
