@@ -22,6 +22,12 @@ if [[ $EUID -ne 0 ]]; then
     exit 1
 fi
 
+if [[ -z "${DISPLAY:-}" ]]; then
+    echo "ERROR: DISPLAY environment variable is not set."
+    echo "Please run with 'sudo -E' to preserve your environment (e.g., sudo -E ./live-install.sh)"
+    exit 1
+fi
+
 echo "[INFO] Rodando no Live Environment"
 echo "[INFO] Forçando idioma do Calamares: $LANGUAGE"
 
@@ -86,4 +92,5 @@ mkdir -p /mnt
 export LANG="$LANGUAGE"
 export LC_ALL="$LANGUAGE"
 
-sudo -E calamares -d &
+# Run in foreground so script doesn't exit immediately
+sudo -E calamares -d
