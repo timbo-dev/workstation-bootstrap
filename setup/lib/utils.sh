@@ -8,18 +8,32 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 CLEAR_LINE='\033[K'
 
-run_as_user() {
-    local cmd="$1"
-    # Ensure REAL_USER is set
-    if [[ -z "${REAL_USER:-}" ]]; then
-        echo -e "${RED}[ERROR] REAL_USER not set. Cannot run command as user.${NC}"
-        return 1
+# Professional Logging
+log_info()  { echo -e "${BLUE}[$(date +'%Y-%m-%d %H:%M:%S')] [INFO]  $*${NC}"; }
+log_warn()  { echo -e "${YELLOW}[$(date +'%Y-%m-%d %H:%M:%S')] [WARN]  $*${NC}"; }
+log_error() { echo -e "${RED}[$(date +'%Y-%m-%d %H:%M:%S')] [ERROR] $*${NC}"; }
+
+# Safe Pacman Lock Wait
+wait_for_pacman() {
+    local lock_file="/var/lib/pacman/db.lck"
+    if [[ -f "$lock_file" ]]; then
+        log_warn "Pacman lock file detected. Waiting for other processes..."
+        while [[ -f "$lock_file" ]]; do
+            sleep 2
+        done
+        log_info "Pacman lock released."
     fi
-    # Use runuser to execute with the user's login environment
-    runuser -l "$REAL_USER" -c "$cmd"
 }
 
-ensure_line_in_file() {
+run_as_user() {
+    local cmd="$1"
+    if [[ -z "${REAL_USER:-}" ]]; then
+        log_error "REAL_USER not set. Cannot drop privileges."
+        return 1
+    fi
+    # Use -l to simulate a full login shell for correct $HOME and PATH
+    runuser -l "$REAL_USER" -c "$cmd"
+}
     local line="$1"
     local file="$2"
     

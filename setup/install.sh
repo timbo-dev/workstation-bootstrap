@@ -14,37 +14,29 @@ fi
 
 # --- Root Elevation ---
 if [[ $EUID -ne 0 ]]; then
-    echo -e "${BLUE}[INFO] Re-running script as root...${NC}"
+    log_info "Re-running script as root..."
     exec sudo "$0" "$@"
 fi
 
 # --- User Detection ---
-# 1. Check SUDO_USER
-# 2. Fallback to the first user with UID >= 1000
 REAL_USER=${SUDO_USER:-$(awk -F: '$3 >= 1000 && $3 != 65534 {print $1; exit}' /etc/passwd)}
 REAL_HOME=$(getent passwd "$REAL_USER" | cut -d: -f6)
 
 if [[ -z "$REAL_USER" ]]; then
-    echo -e "${RED}[ERROR] Could not detect a valid non-root user.${NC}"
+    log_error "Could not detect a valid non-root user."
     exit 1
 fi
 
 export REAL_USER
 export REAL_HOME
 
-echo -e "${BLUE}[INFO] Operating as root.${NC}"
-echo -e "${BLUE}[INFO] Target user: $REAL_USER (Home: $REAL_HOME)${NC}"
+log_info "Bootstrap environment initialized."
+log_info "Real User: $REAL_USER | Home: $REAL_HOME"
 
-# --- Sudo Keep-Alive (optional but helpful for nested sudo) ---
-(while true; do sudo -n -v; sleep 20; kill -0 "$$" || exit; done) 2>/dev/null &
-SUDO_KEEP_ALIVE_PID=$!
-trap 'kill $SUDO_KEEP_ALIVE_PID 2>/dev/null || true' EXIT
+# --- Pre-flight Checks ---
+wait_for_pacman
 
-REQUIRED_DEPS=(
-    "git"
-    "makepkg"
-)
-
+REQUIRED_DEPS=("git" "awk" "getent")
 MISSING_DEPS=()
 for dep in "${REQUIRED_DEPS[@]}"; do
     if ! command -v "$dep" >/dev/null 2>&1; then
@@ -53,11 +45,11 @@ for dep in "${REQUIRED_DEPS[@]}"; do
 done
 
 if [[ ${#MISSING_DEPS[@]} -gt 0 ]]; then
-    echo "[ERROR] Missing required dependencies: ${MISSING_DEPS[*]}"
+    log_error "Missing required dependencies: ${MISSING_DEPS[*]}"
     exit 1
 fi
 
-echo "[INFO] Starting system bootstrap setup..."
+log_info "Starting system bootstrap setup..."
 
 # Iterate through modules
 for module_path in "$MODULES_DIR"/*; do
