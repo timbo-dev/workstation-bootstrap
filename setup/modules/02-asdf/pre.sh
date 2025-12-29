@@ -4,9 +4,9 @@ set -euo pipefail
 
 source "$(dirname "$0")/../../lib/utils.sh"
 
-echo "Configuring ZSH for asdf..."
+echo "Configuring ZSH for asdf for user $REAL_USER..."
 
-ZSHRC="$HOME/.zshrc"
+ZSHRC="$REAL_HOME/.zshrc"
 
 # Core ZSH Autocompletion
 ensure_line_in_file "autoload -Uz compinit" "$ZSHRC"

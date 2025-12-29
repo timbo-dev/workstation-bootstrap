@@ -8,6 +8,17 @@ BLUE='\033[0;34m'
 NC='\033[0m' # No Color
 CLEAR_LINE='\033[K'
 
+run_as_user() {
+    local cmd="$1"
+    # Ensure REAL_USER is set
+    if [[ -z "${REAL_USER:-}" ]]; then
+        echo -e "${RED}[ERROR] REAL_USER not set. Cannot run command as user.${NC}"
+        return 1
+    fi
+    # Use runuser to execute with the user's login environment
+    runuser -l "$REAL_USER" -c "$cmd"
+}
+
 ensure_line_in_file() {
     local line="$1"
     local file="$2"
