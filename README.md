@@ -31,11 +31,8 @@ Once the system is installed, you can run the workstation bootstrap to install a
 
 ### Clone and Execute (Optimized)
 
-To clone only the setup files and execute the installer:
+To clone only the setup files and execute the installer in one line:
 
 ```bash
-git clone --depth 1 --filter=blob:none --sparse https://github.com/timbo-dev/workstation-bootstrap.git
-cd workstation-bootstrap
-git sparse-checkout set setup
-bash setup/install.sh
+git clone --depth 1 --filter=blob:none --sparse https://github.com/timbo-dev/workstation-bootstrap.git && cd workstation-bootstrap && git sparse-checkout set setup && bash setup/install.sh
 ```
