@@ -4,8 +4,13 @@ set -euo pipefail
 
 echo "Installing latest Node.js version via asdf..."
 
-# Source asdf to ensure it's available in this subshell
-source /opt/asdf-vm/asdf.sh || true
+# Source asdf from possible locations
+for asdf_script in "/opt/asdf-vm/asdf.sh" "$HOME/.asdf/asdf.sh"; do
+    if [[ -f "$asdf_script" ]]; then
+        source "$asdf_script"
+        break
+    fi
+done
 
 if command -v asdf >/dev/null; then
     echo "Installing nodejs latest..."
