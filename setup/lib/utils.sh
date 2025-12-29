@@ -18,9 +18,11 @@ ensure_line_in_file() {
 
     if ! grep -Fxq "$line" "$file"; then
         echo "$line" >> "$file"
-        return 0 # Line added
+        echo "[INFO] Added line to $file: $line"
+    else
+        echo "[DEBUG] Line already exists in $file: $line"
     fi
-    return 1 # Line already exists
+    return 0
 }
 
 run_stage() {
