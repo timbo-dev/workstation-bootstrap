@@ -32,21 +32,18 @@ run_stage() {
         return 0
     fi
 
-    echo -n "[WAIT] ($module_name) $stage_name... "
+    echo -e "${GREEN}==>${NC} ${YELLOW}Starting ($module_name) $stage_name...${NC}"
+    echo "--------------------------------------------------------------------------------"
 
-    local tmp_output
-    tmp_output=$(mktemp)
-
-    if bash "$script_path" > "$tmp_output" 2>&1; then
-        echo -e "\r${CLEAR_LINE}[OK]   ($module_name) $stage_name"
-        rm "$tmp_output"
+    if bash "$script_path"; then
+        echo "--------------------------------------------------------------------------------"
+        echo -e "${GREEN}[OK]   ($module_name) $stage_name completed successfully!${NC}"
+        echo ""
         return 0
     else
-        echo -e "\r${CLEAR_LINE}[FAIL] ($module_name) $stage_name"
         echo "--------------------------------------------------------------------------------"
-        cat "$tmp_output"
-        echo "--------------------------------------------------------------------------------"
-        rm "$tmp_output"
+        echo -e "${RED}[FAIL] ($module_name) $stage_name failed!${NC}"
+        echo ""
         return 1
     fi
 }
