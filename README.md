@@ -19,6 +19,23 @@ curl -fsSL -H "Cache-Control: no-cache" "https://raw.githubusercontent.com/timbo
 
 **Notes:**
 
-* The script **must be run as root** (`sudo`)
+* The `live-install.sh` script **must be run as root** (`sudo`)
 * It will automatically set `LANG=pt_BR.UTF-8` and keyboard layout to `br-abnt2`
 * Ensure you are running in a **Live Environment** from `/` directory to avoid mount path issues
+
+---
+
+## Workstation Setup
+
+Once the system is installed, you can run the workstation bootstrap to install all your tools and configurations.
+
+### Clone and Execute (Optimized)
+
+To clone only the setup files and execute the installer:
+
+```bash
+git clone --depth 1 --filter=blob:none --sparse https://github.com/timbo-dev/workstation-bootstrap.git
+cd workstation-bootstrap
+git sparse-checkout set setup
+bash setup/install.sh
+```
