@@ -21,23 +21,6 @@ if [[ $EUID -eq 0 ]]; then
 fi
 
 # Ask for sudo at the beginning and keep it alive
-echo -e "${BLUE}[INFO] This script needs sudo privileges for system-level changes.${NC}"
-echo "Please enter your password if prompted. It will be kept alive throughout the setup."
-
-# Initial sudo attempt
-if sudo -v; then
-    # Keep-alive sudo session in the background
-    # We use sudo -v which is the standard way to refresh the timestamp
-    (while true; do sudo -n -v; sleep 60; kill -0 "$$" || exit; done) 2>/dev/null &
-    SUDO_KEEP_ALIVE_PID=$!
-    
-    # Ensure the keep-alive process is killed on exit
-    trap 'kill $SUDO_KEEP_ALIVE_PID 2>/dev/null || true' EXIT
-    echo -e "${GREEN}[OK]   Sudo session initialized and kept alive.${NC}"
-else
-    echo -e "${RED}[FAIL] Could not obtain sudo privileges. Exiting.${NC}"
-    exit 1
-fi
 
 REQUIRED_DEPS=(
     "git"
