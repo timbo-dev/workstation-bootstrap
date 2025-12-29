@@ -34,6 +34,8 @@ run_as_user() {
     # Use -l to simulate a full login shell for correct $HOME and PATH
     runuser -l "$REAL_USER" -c "$cmd"
 }
+
+ensure_line_in_file() {
     local line="$1"
     local file="$2"
     
