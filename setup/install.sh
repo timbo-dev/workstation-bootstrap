@@ -2,10 +2,13 @@
 
 set -euo pipefail
 
-SCRIPTS_DIR="$(dirname "$0")/scripts"
+# Load utilities
+source "$(dirname "$0")/lib/utils.sh"
 
-if [[ ! -d "$SCRIPTS_DIR" ]]; then
-    echo "[ERROR] Scripts directory not found: $SCRIPTS_DIR"
+MODULES_DIR="$(dirname "$0")/modules"
+
+if [[ ! -d "$MODULES_DIR" ]]; then
+    echo "[ERROR] Modules directory not found: $MODULES_DIR"
     exit 1
 fi
 
@@ -15,7 +18,6 @@ REQUIRED_DEPS=(
 )
 
 MISSING_DEPS=()
-
 for dep in "${REQUIRED_DEPS[@]}"; do
     if ! command -v "$dep" >/dev/null 2>&1; then
         MISSING_DEPS+=("$dep")
@@ -29,28 +31,18 @@ fi
 
 echo "[INFO] Starting system bootstrap setup..."
 
-for script in "$SCRIPTS_DIR"/*-install.sh; do
-    if [[ ! -e "$script" ]]; then
+# Iterate through modules
+for module_path in "$MODULES_DIR"/*; do
+    if [[ ! -d "$module_path" ]]; then
         continue
     fi
 
-    script_name=$(basename "$script")
-    echo -n "[WAIT] Running $script_name... "
+    module_name=$(basename "$module_path")
 
-    # Create a temporary file for output
-    tmp_output=$(mktemp)
-
-    if bash "$script" > "$tmp_output" 2>&1; then
-        echo -e "\r\033[K[OK]   $script_name"
-        rm "$tmp_output"
-    else
-        echo -e "\r\033[K[FAIL] $script_name"
-        echo "--------------------------------------------------------------------------------"
-        cat "$tmp_output"
-        echo "--------------------------------------------------------------------------------"
-        rm "$tmp_output"
-        exit 1
-    fi
+    # Run Lifecycle Stages
+    run_stage "pre-install"  "$module_path/pre.sh"     "$module_name" || exit 1
+    run_stage "installation" "$module_path/install.sh" "$module_name" || exit 1
+    run_stage "post-install" "$module_path/post.sh"    "$module_name" || exit 1
 done
 
 echo "[OK] System bootstrap completed successfully!"
