@@ -9,6 +9,24 @@ if [[ ! -d "$SCRIPTS_DIR" ]]; then
     exit 1
 fi
 
+REQUIRED_DEPS=(
+    "git"
+    "makepkg"
+)
+
+MISSING_DEPS=()
+
+for dep in "${REQUIRED_DEPS[@]}"; do
+    if ! command -v "$dep" >/dev/null 2>&1; then
+        MISSING_DEPS+=("$dep")
+    fi
+done
+
+if [[ ${#MISSING_DEPS[@]} -gt 0 ]]; then
+    echo "[ERROR] Missing required dependencies: ${MISSING_DEPS[*]}"
+    exit 1
+fi
+
 echo "[INFO] Starting system bootstrap setup..."
 
 for script in "$SCRIPTS_DIR"/*-install.sh; do
