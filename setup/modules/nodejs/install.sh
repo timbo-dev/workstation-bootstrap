@@ -13,8 +13,15 @@ for asdf_script in "/opt/asdf-vm/asdf.sh" "$HOME/.asdf/asdf.sh"; do
 done
 
 if command -v asdf >/dev/null; then
+    echo "Adding Node.js plugin..."
     asdf plugin add nodejs https://github.com/asdf-vm/asdf-nodejs.git || true
+    
+    echo "Installing latest Node.js version..."
+    asdf install nodejs latest
+    
+    echo "Setting Node.js latest as global..."
+    asdf global nodejs latest
 else
-    echo "[ERROR] asdf not found. Cannot add Node.js plugin."
+    echo "[ERROR] asdf not found. Cannot install Node.js."
     exit 1
 fi
