@@ -14,7 +14,7 @@ This script automates the configuration of the Manjaro Live Environment, includi
 To download and run the script directly from GitHub:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/timbo-dev/workstation-bootstrap/refs/heads/main/live/live-install.sh | sudo bash
+curl -fsSL -H "Cache-Control: no-cache" "https://raw.githubusercontent.com/timbo-dev/workstation-bootstrap/refs/heads/main/live/live-install.sh?t=$(date +%s)" | sudo bash
 ```
 
 **Notes:**
