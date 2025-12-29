@@ -19,8 +19,8 @@ if command -v asdf >/dev/null; then
     echo "Installing latest Node.js version..."
     asdf install nodejs latest
     
-    echo "Setting Node.js latest as global..."
-    asdf global nodejs latest
+    echo "Setting Node.js latest as home default..."
+    asdf set --home nodejs latest
 else
     echo "[ERROR] asdf not found. Cannot install Node.js."
     exit 1
