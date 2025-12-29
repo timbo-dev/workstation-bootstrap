@@ -1,3 +1,9 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+source "$(dirname "$0")/../../lib/utils.sh"
+
 log_info "Building asdf from AUR as $REAL_USER..."
 
 BUILD_DIR=$(mktemp -d -p /tmp asdf-bootstrap-XXXX)

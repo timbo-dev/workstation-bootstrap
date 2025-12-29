@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+source "$(dirname "$0")/../../lib/utils.sh"
+
 echo "Installing base-devel (build essentials)..."
 
 # Ensure fakeroot, binutils, gcc, etc. are installed
