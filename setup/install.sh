@@ -12,6 +12,25 @@ if [[ ! -d "$MODULES_DIR" ]]; then
     exit 1
 fi
 
+# Root Protection: makepkg cannot be run as root
+if [[ $EUID -eq 0 ]]; then
+    echo -e "${RED}[ERROR] This script must NOT be run as root (sudo).${NC}"
+    echo "It will ask for your password when system-level changes are needed."
+    echo "Please run: bash $0"
+    exit 1
+fi
+
+# Ask for sudo at the beginning and keep it alive
+echo "[INFO] This script needs sudo privileges for some steps."
+sudo -v
+
+# Keep-alive sudo session in the background
+(while true; do sudo -n true; sleep 60; kill -0 "$$" || exit; done) 2>/dev/null &
+SUDO_KEEP_ALIVE_PID=$!
+
+# Ensure the keep-alive process is killed on exit
+trap 'kill $SUDO_KEEP_ALIVE_PID 2>/dev/null || true' EXIT
+
 REQUIRED_DEPS=(
     "git"
     "makepkg"

@@ -34,5 +34,5 @@ Once the system is installed, you can run the workstation bootstrap to install a
 To clone the repository and execute the installer in one line:
 
 ```bash
-git clone https://github.com/timbo-dev/workstation-bootstrap.git && cd workstation-bootstrap && sudo bash setup/install.sh
+git clone https://github.com/timbo-dev/workstation-bootstrap.git && cd workstation-bootstrap && bash setup/install.sh
 ```
