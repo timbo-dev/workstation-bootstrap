@@ -29,10 +29,10 @@ curl -fsSL -H "Cache-Control: no-cache" "https://raw.githubusercontent.com/timbo
 
 Once the system is installed, you can run the workstation bootstrap to install all your tools and configurations.
 
-### Clone and Execute (Optimized)
+### Clone and Execute
 
-To clone only the setup files and execute the installer in one line:
+To clone the repository and execute the installer in one line:
 
 ```bash
-git clone --depth 1 --filter=blob:none --sparse https://github.com/timbo-dev/workstation-bootstrap.git && cd workstation-bootstrap && git sparse-checkout set setup && bash setup/install.sh
+git clone https://github.com/timbo-dev/workstation-bootstrap.git && cd workstation-bootstrap && bash setup/install.sh
 ```
