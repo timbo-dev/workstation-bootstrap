@@ -23,10 +23,10 @@ for script in "$SCRIPTS_DIR"/*-install.sh; do
     tmp_output=$(mktemp)
 
     if bash "$script" > "$tmp_output" 2>&1; then
-        echo -e "\r[OK]   $script_name"
+        echo -e "\r\033[K[OK]   $script_name"
         rm "$tmp_output"
     else
-        echo -e "\r[FAIL] $script_name"
+        echo -e "\r\033[K[FAIL] $script_name"
         echo "--------------------------------------------------------------------------------"
         cat "$tmp_output"
         echo "--------------------------------------------------------------------------------"
