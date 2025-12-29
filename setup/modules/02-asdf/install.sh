@@ -10,7 +10,9 @@ chown "$REAL_USER:$REAL_USER" "$BUILD_DIR"
 run_as_user "
     git clone https://aur.archlinux.org/asdf-vm.git '$BUILD_DIR'
     cd '$BUILD_DIR'
-    makepkg -si --noconfirm
+    makepkg -s --noconfirm
 "
+
+pacman -U --noconfirm "$BUILD_DIR"/*.pkg.tar.zst
 
 rm -rf "$BUILD_DIR"
