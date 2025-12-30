@@ -8,3 +8,5 @@ source "$(dirname "$0")/../../lib/utils.sh"
 log_info "Installing rust..."
 
 asdf_user_setup "rust" "https://github.com/code-lever/asdf-rust.git"
+
+log_info "Rust installed successfully."
