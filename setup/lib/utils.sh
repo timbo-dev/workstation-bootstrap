@@ -35,6 +35,33 @@ run_as_user() {
     runuser -l "$REAL_USER" -c "$cmd"
 }
 
+asdf_user_setup() {
+    local plugin="$1"
+    local url="$2"
+    local version="${3:-latest}"
+
+    run_as_user "
+        # Source asdf if not in path (login shell usually has it, but being safe)
+        for s in '/opt/asdf-vm/asdf.sh' \"\$HOME/.asdf/asdf.sh\"; do
+            if [ -f \"\$s\" ]; then . \"\$s\"; break; fi
+        done
+
+        if ! command -v asdf >/dev/null; then
+            echo \"[ERROR] asdf not found. Cannot install $plugin.\"
+            exit 1
+        fi
+
+        echo \"Adding $plugin plugin...\"
+        asdf plugin add \"$plugin\" \"$url\" || true
+
+        echo \"Installing $plugin \$version...\"
+        asdf install \"$plugin\" \"$version\"
+
+        echo \"Setting $plugin \$version as home default...\"
+        asdf set --home \"$plugin\" \"$version\"
+    "
+}
+
 ensure_line_in_file() {
     local line="$1"
     local file="$2"
