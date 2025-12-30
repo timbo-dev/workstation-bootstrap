@@ -4,8 +4,9 @@ set -euo pipefail
 
 source "$(dirname "$0")/../../lib/utils.sh"
 
-echo "Installing base-devel (build essentials)..."
+log_info "Installing base-devel (build essentials)..."
 
 # Ensure fakeroot, binutils, gcc, etc. are installed
-wait_for_pacman
-pacman -S --needed --noconfirm base-devel
+pacman_install "base-devel"
+
+log_info "base-devel installed successfully."
