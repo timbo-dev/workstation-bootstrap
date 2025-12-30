@@ -59,6 +59,9 @@ asdf_user_setup() {
 
         echo \"Setting $plugin \$version as home default...\"
         asdf set --home \"$plugin\" \"$version\"
+
+        echo \"Refreshing shims...\"
+        asdf reshim \"$plugin\"
     "
 }
 
