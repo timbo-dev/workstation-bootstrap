@@ -7,4 +7,5 @@ source "$(dirname "$0")/../../lib/utils.sh"
 
 log_info "Installing github-cli..."
 
-# Your code here
+# Ensure github-cli is installed pacman package manager
+pacman_install "github-cli"
