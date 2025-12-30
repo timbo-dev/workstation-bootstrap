@@ -11,14 +11,14 @@ run_as_user '
     ASDF_DIR="${ASDF_DATA_DIR:-$HOME/.asdf}"
     mkdir -p "$ASDF_DIR/completions"
 
-    # Sourcing asdf
-    source /opt/asdf-vm/asdf.sh || true
-
-    if command -v asdf >/dev/null; then
-        echo "Generating zsh completions..."
-        asdf completion zsh > "$ASDF_DIR/completions/_asdf"
-        
-        # Enable legacy version files
-        echo "legacy_version_file = yes" > "$HOME/.asdfrc"
+    if ! command -v asdf >/dev/null; then
+        echo "[ERROR] asdf not found. Cannot install plugins."
+        exit 1
     fi
+
+    echo "Generating zsh completions..."
+    asdf completion zsh > "$ASDF_DIR/completions/_asdf"
+
+    # Enable legacy version files
+    echo "legacy_version_file = yes" > "$HOME/.asdfrc"
 '
