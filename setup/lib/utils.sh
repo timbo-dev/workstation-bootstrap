@@ -120,6 +120,12 @@ asdf_user_setup() {
             exit 1
         fi
 
+        # Verify if plugin and version are already installed
+        if asdf plugin list | grep -q "$plugin" && asdf list "$plugin" | grep -q "$version"; then
+            echo \"$plugin $version already installed.\"
+            return 0
+        fi
+
         echo \"Adding $plugin plugin...\"
         asdf plugin add \"$plugin\" \"$url\" || true
 
@@ -137,7 +143,7 @@ asdf_user_setup() {
 ensure_line_in_file() {
     local line="$1"
     local file="$2"
-    
+
     # Ensure directory exists
     mkdir -p "$(dirname "$file")"
     touch "$file"
