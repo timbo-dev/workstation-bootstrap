@@ -34,13 +34,21 @@ pacman_install() {
     fi
 
     # Verify if package already installed
-    
+
+    log_info "Installing packages: $*"
+
     for pkg in "$@"; do
         if pacman -Q "$pkg" &>/dev/null; then
             log_info "Package $pkg already installed."
+            shift
             continue
         fi
     done
+
+    if [[ -z "$@" ]]; then
+        log_info "No remaining packages to install."
+        return 0
+    fi
 
     pacman -S --noconfirm "$@"
 }
