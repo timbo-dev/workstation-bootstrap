@@ -25,6 +25,26 @@ wait_for_pacman() {
     fi
 }
 
+pacman_install() {
+    wait_for_pacman
+
+    if [[ -z "$1" ]]; then
+        log_error "No packages specified for pacman_install."
+        return 1
+    fi
+
+    # Verify if package already installed
+    
+    for pkg in "$@"; do
+        if pacman -Q "$pkg" &>/dev/null; then
+            log_info "Package $pkg already installed."
+            continue
+        fi
+    done
+
+    pacman -S --noconfirm "$@"
+}
+
 run_as_user() {
     local cmd="$1"
     if [[ -z "${REAL_USER:-}" ]]; then
