@@ -25,6 +25,21 @@ wait_for_pacman() {
     fi
 }
 
+pacman_verify_package() {
+    local pkg="$1"
+    if [[ -z "$pkg" ]]; then
+        log_error "No package specified for pacman_verify_package."
+        return 1
+    fi
+
+    if pacman -Q "$pkg" &>/dev/null; then
+        log_info "Package $pkg already installed."
+        return 0
+    fi
+
+    return 1
+}
+
 pacman_install() {
     wait_for_pacman
 
@@ -38,7 +53,7 @@ pacman_install() {
     log_info "Installing packages: $*"
 
     for pkg in "$@"; do
-        if pacman -Q "$pkg" &>/dev/null; then
+        if pacman_verify_package "$pkg"; then
             log_info "Package $pkg already installed."
             shift
             continue
@@ -51,6 +66,32 @@ pacman_install() {
     fi
 
     pacman -S --noconfirm "$@"
+}
+
+pacman_install_from_tar() {
+    local tar_file="$1"
+    local pkg_name="$2"
+
+    wait_for_pacman
+
+    if [[ -z "$tar_file" ]]; then
+        log_error "No tar file specified for pacman_install_from_tar."
+        return 1
+    fi
+
+    if [[ -z "$pkg_name" ]]; then
+        log_error "No package name specified for pacman_install_from_tar."
+        return 1
+    fi
+
+    log_info "Installing package from tar: $pkg_name"
+
+    if pacman_verify_package "$pkg_name"; then
+        log_info "Package $pkg_name already installed."
+        return 0
+    fi
+
+    pacman -U --noconfirm "$tar_file"
 }
 
 run_as_user() {

@@ -7,12 +7,12 @@ source "$(dirname "$0")/../../lib/utils.sh"
 log_info "Building asdf from AUR as $REAL_USER..."
 
 
-if pacman -Q "asdf-vm" &>/dev/null; then
+if pacman_verify_package "asdf-vm"; then
     log_info "asdf-vm already installed."
     exit 0
 fi
 
-BUILD_DIR=$(mktemp -d -p /tmp asdf-bootstrap-XXXX)
+BUILD_DIR=$(mktemp -d -p /tmp asdf-bootstrap)
 chown "$REAL_USER:$REAL_USER" "$BUILD_DIR"
 
 # Step 1: Build as user
@@ -23,8 +23,8 @@ run_as_user "
 "
 
 # Step 2: Deploy as root
-wait_for_pacman
 log_info "Installing asdf-vm package..."
-pacman -U --noconfirm "$BUILD_DIR"/*.pkg.tar.zst
+
+pacman_install_from_tar "$BUILD_DIR"/*.pkg.tar.zst "asdf-vm"
 
 rm -rf "$BUILD_DIR"
