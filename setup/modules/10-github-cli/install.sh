@@ -9,3 +9,5 @@ log_info "Installing github-cli..."
 
 # Ensure github-cli is installed pacman package manager
 pacman_install "github-cli"
+
+log_info "github-cli installed successfully."
